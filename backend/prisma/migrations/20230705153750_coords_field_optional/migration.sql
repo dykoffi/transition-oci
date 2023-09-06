@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Coords" ALTER COLUMN "accuracy" DROP NOT NULL,
+ALTER COLUMN "altitude" DROP NOT NULL,
+ALTER COLUMN "altitudeAccuracy" DROP NOT NULL,
+ALTER COLUMN "heading" DROP NOT NULL,
+ALTER COLUMN "speed" DROP NOT NULL;

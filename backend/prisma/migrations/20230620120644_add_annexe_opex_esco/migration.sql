@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "TypeFichier" ADD VALUE 'ANNEXE_OPEX_ESCO';

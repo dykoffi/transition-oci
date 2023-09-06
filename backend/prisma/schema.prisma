@@ -1,0 +1,133 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model FileUser {
+  id           String   @id @default(uuid())
+  name         String   @default("")
+  url          String   @default("")
+  fileEtag     String   @map("file_etag")
+  size         Int      @default(0)
+  userId       String   @map("user_id")
+  lastModified DateTime @default(now()) @map("last_modified")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @default(now()) @map("updated_at")
+
+  @@map("file_user")
+}
+
+model Parametre {
+  id        String   @id @default(uuid())
+  label     String
+  code      String   @unique
+  type      String?
+  value     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+
+  @@map("parametre")
+}
+
+model Alerting {
+  id          String      @id @default(uuid())
+  email       String[]
+  telephone   String[]
+  typeFichier TypeFichier @unique @map("type_fichier")
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @default(now()) @map("updated_at")
+}
+
+enum TypeFichier {
+  BASE_SITES
+  OPEX_OCI
+  OPEX_ESCO
+  OPEX_IHS
+  CA_SITES
+  PARC_SITES
+  ACTION_COM
+  ACTION_TECH
+  CONGESTION
+  ANNEXE_OPEX_ESCO
+}
+
+model User {
+  id          String    @id @default(uuid())
+  identifier  String    @unique
+  password    String
+  lastLoginAt DateTime?
+
+  @@map("users")
+}
+
+model Action {
+  id           String        @id @default(uuid())
+  date_deb     DateTime
+  date_fin     DateTime
+  localite     String
+  nb_rh        String
+  new_quartier String?
+  nom_action   String
+  partners     String
+  perimetre    String
+  quartier     String
+  region       String
+  ville        String
+  created_at   DateTime      @default(now())
+  coords       Coords?
+  performance  Performance[]
+  file_action  FileAction[]
+}
+
+model Coords {
+  id        String   @id @default(uuid())
+  accuracy  Float?
+  altitude  Float?
+  bearing   Float?
+  latitude  Float
+  longitude Float
+  speed     Float?
+  provider  String?
+  time      DateTime @default(now())
+  action    Action   @relation(fields: [actionId], references: [id])
+  actionId  String   @unique
+}
+
+model Performance {
+  id       String @id @default(uuid())
+  key      String
+  value    String
+  action   Action @relation(fields: [actionId], references: [id])
+  actionId String
+}
+
+model FileAction {
+  id       String @id @default(uuid())
+  fileName String
+  url      String
+  etag     String
+  size     String
+  action   Action @relation(fields: [actionId], references: [id])
+  actionId String
+}
+
+// model Rdependances {
+//   id String @id @default(uuid())
+//   code String
+//   label String 
+//   type String
+//   @@map("rdependances")
+// }
+
+enum TypeMarge {
+  MARGE_CA
+  MARGE_OPEX
+}
