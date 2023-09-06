@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: oci-ihm
-  name: ihm-front
+  namespace: motower
+  name: frontend-ihm
   labels:
-    app: ihm-front
+    app: frontend-ihm
 spec:
   selector:
     matchLabels:
-      app: ihm-front
+      app: frontend-ihm
   template:
     metadata:
       labels:
-        app: ihm-front
+        app: frontend-ihm
     spec:
       containers:
-        - name: ihm-front
-          image: almoustapha/gps-oci-api:oci
+        - name: frontend-ihm
+          image: almoustapha/gps-oci-api:oci #Change this image according your env
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -24,11 +24,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: oci-ihm
-  name: ihm-front-svc
+  namespace: motower
+  name: frontend-ihm-svc
 spec:
   selector:
-    app: ihm-front
+    app: frontend-ihm
   ports:
     - name: http
       protocol: TCP
@@ -38,8 +38,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: oci-ihm
-  name: ihm-front-ingress
+  namespace: motower
+  name: frontend-ihm-ingress
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     nginx.ingress.kubernetes.io/proxy-buffer-size: 256k
@@ -47,12 +47,12 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: 10.242.36.138.sslip.io
+    - host: 10.242.36.138.sslip.io #Change this value according your env
       http:
         paths:
           - backend:
               service:
-                name: ihm-front-svc
+                name: frontend-ihm-svc
                 port:
                   name: http
             path: /

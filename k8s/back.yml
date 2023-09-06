@@ -1,47 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  namespace: oci-ihm
-  name: ihm-back
+  namespace: motower-ihm
+  name: backend-ihm
   labels:
-    app: ihm-back
+    app: backend-ihm
 spec:
   selector:
     matchLabels:
-      app: ihm-back
+      app: backend-ihm
   template:
     metadata:
       labels:
-        app: ihm-back
+        app: backend-ihm
     spec:
       containers:
-        - name: ihm-back
-          image: almoustapha/gps-oci-api:oci
+        - name: backend-ihm
+          image: almoustapha/gps-oci-api:oci #Change this image according your env
           imagePullPolicy: Always
           env:
             - name: MINIO_ENDPOINT
-              value: datastack-minio.default
+              value: datastack-minio.default #Change this value according your env
             - name: MINIO_PORT
-              value: 9000
+              value: 9000 #Change this value according your env
             - name: MINIO_ACCESS_KEY
-              value: RAacjEMGZIrn2IYd
+              value: RAacjEMGZIrn2IYd #Change this value according your env
             - name: MINIO_SECRET_KEY
-              value: ChtN4yCj58MTpUrnbdj5Rlkm4lt57jPx
+              value: ChtN4yCj58MTpUrnbdj5Rlkm4lt57jPx #Change this value according your env
             - name: MINIO_BUCKETNAME
-              value: gpsoci
+              value: motower
             - name: DATABASE_URL
-              value: postgresql://root:root@postgres.ihm-oci.svc.cluster.local:5432/gps_db?schema=public
+              value: postgresql://motower:root@postgres:5432/ihm_db?schema=public
           ports:
             - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  namespace: oci-ihm
-  name: ihm-back-svc
+  namespace: motower-ihm
+  name: backend-ihm-svc
 spec:
   selector:
-    app: ihm-back
+    app: backend-ihm
   ports:
     - name: http
       protocol: TCP
@@ -51,8 +51,8 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: oci-ihm
-  name: ihm-back-ingress
+  namespace: motower-ihm
+  name: backend-ihm-ingress
   annotations:
     cert-manager.io/cluster-issuer: selfsigned-cluster-issuer
     nginx.ingress.kubernetes.io/proxy-buffer-size: 256k
@@ -60,12 +60,12 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: 10.242.36.139.sslip.io
+    - host: 10.242.36.139.sslip. #Change this value according your env
       http:
         paths:
           - backend:
               service:
-                name: ihm-back-svc
+                name: backend-ihm-svc
                 port:
                   name: http
             path: /
