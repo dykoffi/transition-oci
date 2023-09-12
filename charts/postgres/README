@@ -3,8 +3,12 @@
 helm repo add bitnami https://charts.bitnami.com/bitnami 
 ```
 
-## Installer la chart keycloak
+## Installer la chart postgres
 ```bash
 helm install postgres bitnami/postgresql --namespace motower-ihm --version "12.11.1" -f values.yaml
-" 
+```
+
+## Supprime la chart postgres
+```bash
+helm uninstall postgres  --namespace motower-ihm 
 ```

@@ -5,7 +5,7 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 
 ## Installer la chart keycloak
 ```bash
-helm install keycloak bitnami/keycloak --namespace motower-ihm --version "13.0.5" -f values.yaml
+helm install keycloak bitnami/keycloak --namespace motower-keycloak --version "13.0.5" -f values.yaml
 ```
 
 ## Copier le fichier keycloakify.tar.xz dans le conteneur de keycloak pour l'application du theme oci
@@ -13,3 +13,7 @@ helm install keycloak bitnami/keycloak --namespace motower-ihm --version "13.0.5
 tar cf - keycloakify-starter | kubectl exec -i -n motower-keycloak keycloak-0 -- tar xf - -C /opt/bitnami/keycloak/themes/
  ```
 
+## Supprime la chart keycloak
+```bash
+helm uninstall keycloak  --namespace motower-ihm 
+```
