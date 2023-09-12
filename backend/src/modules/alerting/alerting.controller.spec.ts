@@ -6,13 +6,14 @@ import { UpdateOpexDto } from './dto/update.alerting.dto';
 import { Alerting, TypeFichier } from '@prisma/client';
 import { PrismaService } from './../../config/prisma.service';
 import { ConfigService } from '@nestjs/config';
+
 describe('AlertingController', () => {
   let controller: AlertingController;
   let alertingService: AlertingService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AlertingController],
-      providers: [AlertingService,PrismaService,ConfigService],
+      providers: [AlertingService, PrismaService, ConfigService],
     }).compile();
     controller = module.get<AlertingController>(AlertingController);
     alertingService = module.get<AlertingService>(AlertingService);

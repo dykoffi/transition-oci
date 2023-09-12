@@ -176,10 +176,11 @@ class Validation:
                             "columns category not exists in {}".format(selected[i]))
                     for col in df_parsed.columns:
 
-                        nan_percentage = df_parsed[col].isna().sum() / len(df_parsed[col])
+                        nan_percentage = df_parsed[col].isna(
+                        ).sum() / len(df_parsed[col])
                         if nan_percentage > 0.25:
                             errors.append(
-                                "{} has NaN value percentage greater than 0.25 in sheet {}".format(col,selected[i]))
+                                "{} has NaN value percentage greater than 0.25 in sheet {}".format(col, selected[i]))
                     # if "category" in df_parsed.columns:
                     #     if df_parsed["category"].max() not in category:
                     #         errors.append("category {} not exists".format(
@@ -204,8 +205,59 @@ class Validation:
         else:
             print("good")
 
-    def validationClassique(self, list_col, sheet_name=None, skiprows=None):
+    def validationBaseSite(self, list_col: list, sheet_name=None, skiprows=None):
 
+        if sheet_name:
+            if skiprows:
+                df = pd.read_excel(self.path, sheet_name,
+                                   header=1, skiprows=skiprows)
+            else:
+                df = pd.read_excel(self.path, sheet_name)
+        else:
+            df = pd.read_excel(self.path)
+        df.columns = df.columns.str.strip()
+        columns = [x.upper() for x in df.columns]
+        columns = [unidecode(col) for col in columns]
+        df.columns = columns
+        list_col = [unidecode(col) for col in list_col]
+
+        must_existed_col = [x.upper() for x in list_col]
+        errors = []
+        col_not_existed = [
+            col for col in must_existed_col if col not in df.columns]
+
+        # regle 1
+        if len(col_not_existed) > 0:
+            errors.append("{} are not present".format(col_not_existed))
+
+        existed = [x for x in must_existed_col if x not in col_not_existed]
+        if len(existed) > 0:
+            for col in existed:
+                nan_percentage: int = df[col].isna().sum() / len(df[col])
+
+                # 100% de complétude (regle 2 )
+                if col not in ['CODE ESCO', 'CODE IHS']:
+                    if nan_percentage != 0:
+                        errors.append(
+                            "{} colum has some NaN value ".format(col))
+
+        # règle 3
+        if "CODE OCI" in existed and df["CODE OCI"].count() < 2000:
+            errors.append("we don\'t have 2000 rows in the file ")
+
+        # règle 4
+        ihs_present = [index for index, value in enumerate(
+            df['PROPRIETAIRE']) if value == "IHS" and pd.isnull(df['CODE IHS'][index])]
+        if len(ihs_present) > 0:
+            errors.append("Some site managed by IHS haven't CODE IHS")
+
+        if len(errors) > 0:
+            print('bad')
+            print(format_error(errors))
+        else:
+            print("good")
+
+    def validationClassique(self, list_col: list, sheet_name=None, skiprows=None):
         if sheet_name:
             if skiprows:
                 df = pd.read_excel(self.path, sheet_name,
@@ -236,23 +288,10 @@ class Validation:
 
             for col in existed:
                 nan_percentage = df[col].isna().sum() / len(df[col])
-                if self.type_fichier == "BASE_SITES":
-                    if col in ['CODE OCI', 'CODE IHS']:
-                        if nan_percentage > 0.5:
-                            errors.append(
-                                "{} has NaN value percentage greater than 50%".format(col))
-                else:
-                    if nan_percentage > 0.25:
-                        errors.append(
-                            "{} has NaN value percentage greater than 0.25".format(col))
 
-        if self.type_fichier == "BASE_SITES":
-            if "CODE OCI" in existed and df["CODE OCI"].count() < 2000:
-                errors.append("we don\'t have 2000 rows in the file ")
-            ihs_present = [index for index, value in enumerate(
-                df['PROPRIETAIRE']) if value == "IHS" and pd.isnull(df['CODE IHS'][index])]
-            if len(ihs_present) > 0:
-                errors.append("Some site managed by IHS haven't CODE IHS")
+                if nan_percentage > 0.25:
+                    errors.append(
+                        "{} has NaN value percentage greater than 0.25".format(col))
 
         if len(errors) > 0:
             print('bad')
@@ -268,7 +307,8 @@ class Validation:
             self.validationOpexIhs()
 
         if self.type_fichier == "BASE_SITES":
-            self.validationClassique(["SITE", "SITE BTS", "SITE PHYSIQUE", "CODE OCI", "CODE ESCO", "CODE IHS", "LONGITUDE", "LATITUDE", "PROPRIETAIRE", "GESTIONNAIRE", "COMMUNE", "DEPARTEMENT", "REGION", "DISTRICT", "PARTENAIRES", "LOCALISATION", "VILLE", "QUARTIER", "TYPE DU SITE"])
+            self.validationBaseSite(["SITE", "SITE BTS", "SITE PHYSIQUE", "CODE OCI", "CODE ESCO", "CODE IHS", "LONGITUDE", "LATITUDE", "PROPRIETAIRE",
+                                     "GESTIONNAIRE", "GEO LOCALITE", "COMMUNE", "DEPARTEMENT", "REGION", "DISTRICT", "PARTENAIRES", "LOCALISATION", "VILLE", "QUARTIER", "TYPE DU SITE"])
 
         if self.type_fichier == "OPEX_OCI":
             self.validationClassique(["CODE OCI", "SITE", "LOCALISATION", "PROPRIETAIRE",

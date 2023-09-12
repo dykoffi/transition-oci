@@ -9,8 +9,6 @@ import { HttpModule } from '@nestjs/axios';
 import { ParametreController } from './modules/parametre/parametre.controller';
 import { ParametreService } from './modules/parametre/parametre.service';
 import { ParametreModule } from './modules/parametre/parametre.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
 import { FormDataModule } from './modules/form_data/form_data.module';
 import { ActionModule } from './modules/action/action.module';
 @Module({
@@ -30,7 +28,7 @@ import { ActionModule } from './modules/action/action.module';
     {
       isGlobal: true,
     }
-  ), FileUserModule, AlertingModule, ParametreModule, AuthModule, UserModule, FormDataModule, ActionModule],
+  ), FileUserModule, AlertingModule, ParametreModule, FormDataModule, ActionModule],
   controllers: [AppController, ParametreController],
   providers: [AppService, ParametreService,
   // This adds a global level authentication guard,
