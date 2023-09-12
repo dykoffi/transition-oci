@@ -1,0 +1,9 @@
+## Ajouter le repo bitnami
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami 
+```
+
+## Installer la chart keycloak
+```bash
+helm install keycloak bitnami/keycloak --namespace motower-keycloak --version "13.0.5" -f values.yaml
+```
