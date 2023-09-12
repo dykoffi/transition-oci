@@ -5,5 +5,5 @@ kubectl apply -f back.yml
 
 ## Lancer le seeder pour populate la base de données
 ```bash
-npx prisma db seed
+kubectl exec -it backend-ihm-86c754d94c-5wv92 -n motower-ihm -- npx prisma db seed
 ```
