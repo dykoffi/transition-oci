@@ -5,7 +5,7 @@ metadata:
   namespace: motower-ihm
 spec:
   serviceName: postgres
-  replicas: 1  # Adjust the number of replicas as needed
+  replicas: 1 # Adjust the number of replicas as needed
   selector:
     matchLabels:
       app: postgres
@@ -15,29 +15,29 @@ spec:
         app: postgres
     spec:
       containers:
-      - name: postgres
-        image: postgres:14  # Use the desired PostgreSQL version
-        ports:
-        - containerPort: 5432
-        env:
-        - name: POSTGRES_DB
-          value: ihm_db  # Change to your desired database name
-        - name: POSTGRES_USER
-          value: motower  # Change to your desired username
-        - name: POSTGRES_PASSWORD
-          value: motower 
-        volumeMounts:
-        - name: postgres-persistent-storage
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: postgres:14-alpine # Use the desired PostgreSQL version
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: ihm_db # Change to your desired database name
+            - name: POSTGRES_USER
+              value: motower # Change to your desired username
+            - name: POSTGRES_PASSWORD
+              value: motower
+          volumeMounts:
+            - name: postgres-persistent-storage
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: postgres-persistent-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      # storageClassName: your-storage-class  # Specify your storage class
-      resources:
-        requests:
-          storage: 10Gi  # Adjust the storage size as needed
+    - metadata:
+        name: postgres-persistent-storage
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        # storageClassName: your-storage-class  # Specify your storage class
+        resources:
+          requests:
+            storage: 10Gi # Adjust the storage size as needed
 ---
 apiVersion: v1
 kind: Service
@@ -45,8 +45,8 @@ metadata:
   name: postgres
 spec:
   ports:
-  - port: 5432
-    name: postgres
+    - port: 5432
+      name: postgres
   clusterIP: None
   selector:
     app: postgres

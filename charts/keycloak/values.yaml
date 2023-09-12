@@ -9,17 +9,17 @@ postgresql:
   postgresqlDatabase: keycloak
 proxyAddressForwarding: true
 service:
-  type: ClusterIP
-ingress:
-  enabled: true
-  servicePort: http
-  hostname: "keycloak.hostname" # Remplacer par un hostname possible
-  tls: false
-  annotations:
-    cert-manager.io/cluster-issuer: "" # Mettre votre issuer pour la signature des certifs
-    nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
-    nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
-  extraTls:
-    - hosts:
-        - "keycloak.hostname" # Remplacer par un hostname possible
-      secretName: identity-certificate-secret
+  type: NodePort
+# ingress:
+#   enabled: true
+#   servicePort: http
+#   hostname: "keycloak.hostname" # Remplacer par un hostname possible
+#   tls: false
+#   annotations:
+#     cert-manager.io/cluster-issuer: "" # Mettre votre issuer pour la signature des certifs
+#     nginx.ingress.kubernetes.io/proxy-buffer-size: "256k"
+#     nginx.ingress.kubernetes.io/proxy-buffers-number: "4"
+#   extraTls:
+#     - hosts:
+#         - "keycloak.hostname" # Remplacer par un hostname possible
+#       secretName: identity-certificate-secret
