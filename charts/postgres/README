@@ -8,6 +8,16 @@ helm repo add bitnami https://charts.bitnami.com/bitnami
 helm install postgres bitnami/postgresql --namespace motower-ihm --version "12.11.1" -f values.yaml
 ```
 
+## Verifier les PVC de la chart
+```bash
+kubectl get pvc -n motower-ihm
+```
+
+## Supprimer le PVC de la chart
+```bash
+kubectl delete pvc/data-postgres-postgresql-0 -n motower-ihm
+```
+
 ## Supprime la chart postgres
 ```bash
 helm uninstall postgres  --namespace motower-ihm 
