@@ -1,0 +1,10 @@
+## Ajouter le repo bitnami
+```bash
+helm repo add bitnami https://charts.bitnami.com/bitnami 
+```
+
+## Installer la chart keycloak
+```bash
+helm install postgres bitnami/postgresql --namespace motower-ihm --version "12.11.1
+" 
+```

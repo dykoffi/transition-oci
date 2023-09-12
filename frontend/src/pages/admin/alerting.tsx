@@ -4,7 +4,6 @@ import { Tree } from 'primereact/tree';
 import { Dialog } from 'primereact/dialog';
 import { MultiSelect, TextInput } from '@mantine/core';
 import { v4 as uuidv4 } from 'uuid';
-import TreeNode from 'primereact/treenode';
 import { Button } from 'primereact/button';
 import { useForm } from '@mantine/form';
 import { ToastContainer } from 'react-toastify';
@@ -20,7 +19,7 @@ const Alerting = () => {
   const [position, setPosition] = useState<string>('center');
   const [alerts, setAlerts] = useState([]);
   const [loaded, setLoaded] = useState<boolean>(true);
-  const [treeData, setTreeData] = useState<TreeNode[]>([]);
+  const [treeData, setTreeData] = useState<any[]>([]);
   const [alertSelect, setAlertSelect] = useState([]);
   const state = useSelector((state: RootState) => state.user);
   const user_role = JSON.parse(state.roles);
