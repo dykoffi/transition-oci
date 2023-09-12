@@ -16,21 +16,21 @@ spec:
     spec:
       containers:
         - name: backend-ihm
-          image: almoustapha/gps-oci-api:oci #Change this image according your env
+          image: dykoffi/oci-back #Change this image according your env
           imagePullPolicy: Always
           env:
             - name: MINIO_ENDPOINT
               value: datastack-minio.data-stack #Change this value according your env
             - name: MINIO_PORT
-              value: 9000 #Change this value according your env
+              value: "9000" #Change this value according your env
             - name: MINIO_ACCESS_KEY
-              value: RAacjEMGZIrn2IYd #Change this value according your env
+              value: admin #Change this value according your env
             - name: MINIO_SECRET_KEY
-              value: ChtN4yCj58MTpUrnbdj5Rlkm4lt57jPx #Change this value according your env
+              value: 6Sfa6MTpt96dY2D9Jv5c #Change this value according your env
             - name: MINIO_BUCKETNAME
-              value: motower
+              value: gps-oci
             - name: DATABASE_URL
-              value: postgresql://motower:6Sfa6MTpt96dY2D9Jv5c@postgres-postgresql:5432/ihm_db?schema=public
+              value: postgresql://motower:6Sfa6MTpt96dY2D9Jv5c@postgres-postgresql:5432/test?schema=public
           ports:
             - containerPort: 3000
 ---
