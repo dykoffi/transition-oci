@@ -1,0 +1,9 @@
+## Deployer le backend
+```bash
+kubectl apply -f back.yml
+```
+
+## Lancer le seeder pour populate la base de données
+```bash
+npx prisma db seed
+```
