@@ -1,5 +1,6 @@
-FROM node:18-alpine3.16
-
+FROM alpine 
+# node:18-alpine3.16
+RUN apk add nodejs npm --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --allow-untrusted
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
 RUN python3 -m ensurepip
@@ -7,6 +8,8 @@ RUN pip3 install --no-cache --upgrade pip setuptools
 RUN echo "@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
 RUN apk add --update --no-cache py3-numpy py3-pandas py3-openpyxl
 RUN pip3 install xlrd unidecode
+RUN npm i -g yarn
+
 WORKDIR /app
 
 COPY ./package.json ./
