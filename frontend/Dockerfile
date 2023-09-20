@@ -1,4 +1,4 @@
-FROM node:18 as builder
+FROM node:18 AS builder
 
 # set working directory
 WORKDIR /app
@@ -9,8 +9,9 @@ RUN yarn install
 COPY . .
 RUN yarn build --mode oci
 
-FROM nginx:1.21.0-alpine as production
-# TODO Why you use "As production" if dont use it after
+FROM alpine AS production
+
+RUN apk add nginx
 
 COPY --from=builder ./app/dist /usr/share/nginx/html
 # Add your nginx.conf

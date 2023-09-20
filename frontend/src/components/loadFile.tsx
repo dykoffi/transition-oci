@@ -79,9 +79,6 @@ export function LoadFile(props: LoadFileProps) {
     upload_data.push({value:'ANNEXE_OPEX_ESCO', label:'ANNEXE OPEX ESCO'})
   }
  
-
-  useEffect(() => {
-  }, []);
   const uploadFile = async (values: { origine: string; date_range: (Date | null)[] }) => {
     const formData = new FormData();
     const folder = values.origine;
@@ -208,7 +205,7 @@ export function LoadFile(props: LoadFileProps) {
                 <IconX size={50} stroke={1.5} color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]} />
               </Dropzone.Reject>
               <Dropzone.Idle>
-                <img src={Excell} className="w-12" />
+                <img src={Excell} className="w-12" alt="" />
               </Dropzone.Idle>
 
               <div>
@@ -221,7 +218,7 @@ export function LoadFile(props: LoadFileProps) {
 
           <div className={`${!sucess && 'hidden'}`}>
             <div className={`p-5 flex justify-center items-center gap-4`}>
-              <img src={Excell} className="w-12" />
+              <img src={Excell} className="w-12" alt="" />
               <p className="font-bold text-green underline">{file?.name}</p>
               <Tooltip label="Annuler l'importation du fichier">
                 <UnstyledButton className="hover:bg-red-600 rounded-full" onClick={() => setSucess(false)}>

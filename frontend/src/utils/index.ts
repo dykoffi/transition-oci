@@ -1,5 +1,4 @@
 import { FOLDER_BUCKET } from "../constant";
-import { getAlerting, updateAlerting } from "../services/alerting";
 
 export const getTypes = (type: string) => {
     if (type in FOLDER_BUCKET) {

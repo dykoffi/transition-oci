@@ -14,17 +14,18 @@ import { notify } from './../../services/notification';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../config/store/store';
 import { getTypes } from '../../utils';
-function getProductsData(files:any[]) {
-  const data = files.map((elt: any) => {
+import { FileUser } from '../type';
+function getProductsData(files: FileUser[]) {
+  const data = files.map((elt) => {
     return {
       ...elt,
-      url:elt.url,
+      url: elt.url,
       image: Excell,
-      author: elt.userId? elt.userId: 'None',
+      author: elt.userId ? elt.userId : 'None',
       category: elt.type,
       fichier: elt.name,
       date: new Date(elt.createdAt),
-      id: elt.etag,
+      id: elt.fileEtag,
     };
   });
 
@@ -33,13 +34,13 @@ function getProductsData(files:any[]) {
 const Historique = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const theme = useMantineTheme();
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<FileUser[]>([]);
   const state = useSelector((state: RootState) => state.user);
   const user_role = JSON.parse(state.roles);
   const keycloak_client = import.meta.env.VITE_KEYCLOAK_CLIENT
-  const role = user_role[keycloak_client]?user_role[keycloak_client].roles:[];
-  
- 
+  const role = user_role[keycloak_client] ? user_role[keycloak_client].roles : [];
+
+
   const getFiles = () => {
 
     axios
@@ -61,21 +62,21 @@ const Historique = () => {
       .catch((error) => {
         notify('Une erreur est survenu', 'error');
         console.log(error);
-        
+
       });
   };
 
   useEffect(() => {
     getFiles();
   }, [files.length]);
-  
+
 
   const products = useMemo(() => getProductsData(files), [files]);
   const isFileUploadAllowed = role.includes('file-upload');
 
   return (
     <div>
-      
+
       <ToastContainer />
       <Modal
         opened={opened}

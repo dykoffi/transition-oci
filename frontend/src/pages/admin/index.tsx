@@ -5,7 +5,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Admin = () => {
-  let items: MenuItem[] = [
+  const items: MenuItem[] = [
     /*         {label: 'Gestion des Opex', icon: 'pi pi-fw pi-table',url:'/gestion/admin'},
      */ { label: 'Alerting', icon: 'pi pi-fw pi-megaphone', url: '/gestion/admin', className: 'text-orange-500' },
     { label: 'Paramètres', icon: 'pi pi-fw pi-credit-card', url: '/gestion/admin/finance' },

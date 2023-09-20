@@ -34,7 +34,7 @@ const Gestion = ()=> {
                 className={`${useMatch('/home')? "bg-orange-400 hover:text-orange-400 hover:bg-orange-200 text-sm text-white":"bg-orange-50 hover:bg-orange-100 text-sm text-orange-400"}  hidden lg:flex lg:py-2 px-6 font-bold rounded-l-xl rounded-t-xl transition duration-200`}
                 href="/home"
                 >
-                Retour à l'accueil
+                Retour à l&apos;accueil
                 </a>
                 <a 
                 className={`${useMatch('/gestion/historique')? "bg-orange-400 hover:text-orange-400 hover:bg-orange-200 text-sm text-white":"bg-orange-50 hover:bg-orange-100 text-sm text-orange-400"}  hidden lg:flex lg:py-2 px-6 font-bold rounded-l-xl rounded-t-xl transition duration-200`}

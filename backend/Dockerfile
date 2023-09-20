@@ -1,5 +1,4 @@
 FROM alpine 
-# node:18-alpine3.16
 RUN apk add nodejs npm --update-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/main --allow-untrusted
 ENV PYTHONUNBUFFERED=1
 RUN apk add --update --no-cache python3 && ln -sf python3 /usr/bin/python
