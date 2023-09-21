@@ -16,8 +16,28 @@ spec:
     spec:
       containers:
         - name: backend-ihm
-          image: dykoffi/oci-back #Change this image according your env
+          image: dykoffi/oci-back:oci #Change this image according your env
           imagePullPolicy: Always
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            fsGroup: 10001
+            supplementalGroups: [1001]
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop: 
+                - ALL
+          resources:
+            requests:
+              cpu: 1G
+              memory: 2G
+            limits:
+              cpu: 1G
+              memory: 2G
           env:
             - name: MINIO_ENDPOINT
               value: datastack-minio.data-stack #Change this value according your env
