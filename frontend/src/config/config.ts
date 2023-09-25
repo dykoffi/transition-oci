@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
 import axios from "axios"
-import { BASE_URL_API } from "../constant"
 
 
 export const keycloak = new Keycloak({
@@ -12,7 +11,7 @@ export const keycloak = new Keycloak({
 
 export const apiClient = axios.create(
     {
-        baseURL: BASE_URL_API,
+        baseURL: import.meta.env.VITE_BASE_URL_API,
         headers:{
             "Content-Type": "application/json",
             Accept: "application/json",

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { notify } from './../../services/notification';
 import ParametreTable from '../../components/Table/parametreTable';
 import { getParametre } from '../../services/pamaretre';
 import { Tabs } from '@mantine/core';
-import { IconListDetails, IconListNumbers } from '@tabler/icons';
+import { IconListDetails, IconListNumbers } from '@tabler/icons-react';
 import { Params } from '../type';
 
 const Finance = () => {
@@ -34,14 +34,14 @@ const Finance = () => {
         <Tabs.List>
           <Tabs.Tab
             value="finance"
-            icon={<IconListDetails size="1.8rem" />}
+            leftSection={<IconListDetails size="1.8rem" />}
             className="font-bold text-lg text-orange-500"
           >
             Seuils Financiers
           </Tabs.Tab>
           <Tabs.Tab
             value="technique"
-            icon={<IconListNumbers size="1.8rem" />}
+            leftSection={<IconListNumbers size="1.8rem" />}
             className="font-bold text-lg text-orange-500"
           >
             Seuils Techniques

@@ -34,6 +34,15 @@ interface TableProps {
     }[]
 }
 
+const DownloadBodyTemplate = (rowData: any) => {
+    const link = rowData.url.includes('minio') ? rowData.url.replace('minio', "localhost") : rowData.url;
+    return (
+        <a href={link} target={'_blank'} rel="noreferrer">
+            <img alt={"#"} src={Cloud} width={32} style={{ verticalAlign: 'middle' }} />
+        </a>
+    );
+}
+
 const Table: React.FC<TableProps> = (props) => {
 
     const [globalFilterValue, setGlobalFilterValue] = useState('');
@@ -109,16 +118,7 @@ const Table: React.FC<TableProps> = (props) => {
         );
     }
 
-    const DownloadBodyTemplate = (rowData: any) => {
-        //console.log('minio',rowData.url.includes('minio'));
 
-        const link = rowData.url.includes('minio') ? rowData.url.replace('minio', "localhost") : rowData.url;
-        return (
-            <a href={link} target={'_blank'} rel="noreferrer">
-                <img alt={"#"} src={Cloud} width={32} style={{ verticalAlign: 'middle' }} />
-            </a>
-        );
-    }
     return (
         <>
             <DataTable value={props.data} removableSort paginator responsiveLayout="scroll"

@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 const config = new ConfigService();
 const logger = new FluentClient("gpsihm", {
   socket: {
-    host: config.get<string>('FLUENTD_HOST') || "35.193.85.128",
+    host: config.get<string>('FLUENTD_HOST'),
     port: config.get<number>('FLUENTD_PORT') || 30002,
     timeout: config.get<number>('FLUENTD_TIMEOUT') || 3000, // 3 seconds
   }

@@ -119,13 +119,16 @@ model FileAction {
   actionId String
 }
 
-// model Rdependances {
-//   id String @id @default(uuid())
-//   code String
-//   label String 
-//   type String
-//   @@map("rdependances")
-// }
+model ActivityLog {
+  id        String   @id @default(uuid())
+  label     String
+  type      String
+  level     String
+  code      String
+  user      String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @map("updated_at")
+}
 
 enum TypeMarge {
   MARGE_CA

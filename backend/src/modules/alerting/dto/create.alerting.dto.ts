@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { TypeFichier } from '@prisma/client';
 import { IsArray, IsEnum } from 'class-validator';
 
-export class createAlertingDto {
+export class CreateAlertingDto {
   @IsArray()
   @ApiProperty({
     example: ['email@example.com'],

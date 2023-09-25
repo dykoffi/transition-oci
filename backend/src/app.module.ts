@@ -11,9 +11,11 @@ import { ParametreService } from './modules/parametre/parametre.service';
 import { ParametreModule } from './modules/parametre/parametre.module';
 import { FormDataModule } from './modules/form_data/form_data.module';
 import { ActionModule } from './modules/action/action.module';
+import { ActivityLogModule } from './modules/activity_log/activity_log.module';
+import { ActivityLogService } from './modules/activity_log/activity_log.service';
 @Module({
   imports: [
- /* KeycloakConnectModule.register({
+    /* KeycloakConnectModule.register({
       authServerUrl: 'http://localhost:8080/auth',
       realm: 'gps-realm',
       clientId: 'nest-app',
@@ -24,14 +26,23 @@ import { ActionModule } from './modules/action/action.module';
       timeout: 180000,
       maxRedirects: 5,
     }),
-    MinioModule,ConfigModule.forRoot(
-    {
+    MinioModule,
+    ConfigModule.forRoot({
       isGlobal: true,
-    }
-  ), FileUserModule, AlertingModule, ParametreModule, FormDataModule, ActionModule],
+    }),
+    FileUserModule,
+    AlertingModule,
+    ParametreModule,
+    FormDataModule,
+    ActionModule,
+    ActivityLogModule,
+  ],
   controllers: [AppController, ParametreController],
-  providers: [AppService, ParametreService,
-  // This adds a global level authentication guard,
+  providers: [
+    AppService,
+    ParametreService,
+    ActivityLogService
+    // This adds a global level authentication guard,
     // you can also have it scoped
     // if you like.
     //
@@ -42,7 +53,7 @@ import { ActionModule } from './modules/action/action.module';
       useClass: AuthGuard,
     }, */
     // This adds a global level resource guard, which is permissive.
-    // Only controllers annotated with @Resource and 
+    // Only controllers annotated with @Resource and
     // methods with @Scopes
     // are handled by this guard.
     /* {
@@ -51,7 +62,7 @@ import { ActionModule } from './modules/action/action.module';
     }, */
     // New in 1.1.0
     // This adds a global level role guard, which is permissive.
-    // Used by `@Roles` decorator with the 
+    // Used by `@Roles` decorator with the
     // optional `@AllowAnyRole` decorator for allowing any
     // specified role passed.
     /* {

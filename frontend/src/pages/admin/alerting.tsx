@@ -2,95 +2,108 @@ import { useEffect, useState } from 'react';
 import { getAlerting, updateAlerting } from '../../services/alerting';
 import { Tree } from 'primereact/tree';
 import { Dialog } from 'primereact/dialog';
-import { MultiSelect, TextInput } from '@mantine/core';
+import { MultiSelect } from 'primereact/multiselect';
+import { InputText } from 'primereact/inputtext';
 import { v4 as uuidv4 } from 'uuid';
 import { Button } from 'primereact/button';
-import { useForm } from '@mantine/form';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { notify } from '../../services/notification';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../config/store/store';
 import { getEmailById, getTelephoneById, getTypes } from '../../utils';
+import { useFormik } from 'formik';
 
+type PositionType = "center" | "top" | "bottom" | "left" | "right" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | undefined
 const Alerting = () => {
   const [visible1, setVisible1] = useState<boolean>(false);
   const [visible2, setVisible2] = useState<boolean>(false);
-  const [position, setPosition] = useState<string>('center');
+  const [position, setPosition] = useState<PositionType>('center');
   const [alerts, setAlerts] = useState([]);
   const [loaded, setLoaded] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<any[]>([]);
   const [alertSelect, setAlertSelect] = useState([]);
   const state = useSelector((state: RootState) => state.user);
   const user_role = JSON.parse(state.roles);
+  const user = JSON.parse(state.info);
+
   const keycloak_client = import.meta.env.VITE_KEYCLOAK_CLIENT
   const role = user_role[keycloak_client] ? user_role[keycloak_client].roles : [];
 
- 
-  const emailForm = useForm({
+
+  const emailForm = useFormik({
     initialValues: {
       selectedFichier: [],
       email: '',
     },
+    onSubmit: (values, reset) => {
+      values.selectedFichier.forEach((id) => {
+        const email = getEmailById(alerts, id);
+        if (email && !email.includes(values.email)) {
+          email.push(values.email);
+          updateAlerting({
+            id: id,
+            email: email,
+            updatedAt: new Date(),
+            user: user.email
+          });
+          getAlerting().then((alerting) => {
+            setAlerts(alerting.data);
+            setVisible1(false);
+            setLoaded(true);
+            notify('Le(s) adresse(s) mail(s) a(ont) bien été ajouté', 'sucess');
+          });
+
+        } else {
+          notify('email dejà enregistré', 'error');
+        }
+        reset.resetForm();
+      });
+    },
   });
 
-  const addEmailAlert = (values: { selectedFichier: any[]; email: string }) => {
-    values.selectedFichier.map(async (id) => {
-      const email = getEmailById(alerts,id);
-      if (email && !email.includes(values.email)) {
-        email.push(values.email);
-        updateAlerting({
-          id: id,
-          email: email,
-          updatedAt: new Date(),
-        });
-        const alerting = await getAlerting();
-        setAlerts(alerting.data);
-        setVisible1(false);
-        setLoaded(true);
-        notify('Le(s) adresse(s) mail(s) a(ont) bien été ajouté', 'sucess');
-      } else {
-        notify('email dejà enregistré', 'error');
-      }
-    });
-  };
-
-  const telForm = useForm({
+  const telForm = useFormik({
     initialValues: {
       selectedFichier: [],
       telephone: '',
     },
+    onSubmit: (values, reset) => {
+      values.selectedFichier.forEach((id) => {
+        const telephone = getTelephoneById(alerts, id);
+        if (telephone && !telephone.includes(values.telephone)) {
+          telephone.push(values.telephone);
+          updateAlerting({
+            id: id,
+            telephone: telephone,
+            updatedAt: new Date(),
+            user: user.email
+          });
+          getAlerting().then((alerting) => {
+            setAlerts(alerting.data);
+            setVisible2(false);
+            setLoaded(true);
+            notify('Le(s) numéro(s) de téléphone a(ont) bien été ajouté', 'sucess');
+          });
+
+        } else {
+          notify('telephone dejà enrégistré', 'error');
+        }
+        reset.resetForm();
+
+      });
+    },
   });
 
-  const addTelAlert = (values: { selectedFichier: any[]; telephone: string }) => {
-    values.selectedFichier.map(async (id) => {
-      const telephone = getTelephoneById(alerts,id);
-      if (telephone && !telephone.includes(values.telephone)) {
-        telephone.push(values.telephone);
-        updateAlerting({
-          id: id,
-          telephone: telephone,
-          updatedAt: new Date(),
-        });
-        const alerting = await getAlerting();
-        setAlerts(alerting.data);
-        setVisible2(false);
-        setLoaded(true);
-        notify('Le(s) numéro(s) de téléphone a(ont) bien été ajouté', 'sucess');
-      } else {
-        notify('telephone dejà enrégistré', 'error');
-      }
-    });
-  };
 
 
 
 
-  const show1 = (position: string) => {
+
+  const show1 = (position: PositionType) => {
     setPosition(position);
     setVisible1(true);
   };
-  const show2 = (position: string) => {
+  const show2 = (position: PositionType) => {
     setPosition(position);
     setVisible2(true);
   };
@@ -219,26 +232,28 @@ const Alerting = () => {
       <Dialog
         header="Ajouter une alerte par email"
         visible={visible1}
-        position={'center' || position}
+        position={position}
         style={{ width: '50vw' }}
         onHide={() => setVisible1(false)}
         draggable={false}
         resizable={false}
       >
-        <form action="" onSubmit={emailForm.onSubmit((values) => addEmailAlert(values))}>
+        <form action="" onSubmit={emailForm.handleSubmit}>
           <div className="my-4">
             <label htmlFor="selectedFichier">Type de fichier</label>
             <MultiSelect
+              display='chip'
               id="selectedFichier"
-              {...emailForm.getInputProps('selectedFichier')}
-              data={alertSelect}
+              {...emailForm.getFieldProps('selectedFichier')}
+              options={alertSelect}
+              optionValue='value'
               placeholder="Selectionner le type de fichier"
               className="w-full md:w-20rem"
             />
           </div>
           <div className="my-4">
             <label htmlFor="email">Adresse email</label>
-            <TextInput id="email" className="w-full md:w-20rem" type={'email'} {...emailForm.getInputProps('email')} />
+            <InputText id="email" className="w-full md:w-20rem" type={'email'} {...emailForm.getFieldProps('email')} />
           </div>
           <div className="text-center">
             <Button label="Ajouter" icon="pi pi-check" />
@@ -248,30 +263,32 @@ const Alerting = () => {
       <Dialog
         header="Ajouter une alerte par téléphone"
         visible={visible2}
-        position={'center' || position}
+        position={position}
         style={{ width: '50vw' }}
         onHide={() => setVisible2(false)}
         draggable={false}
         resizable={false}
       >
-        <form action="" onSubmit={telForm.onSubmit((values) => addTelAlert(values))}>
+        <form action="" onSubmit={telForm.handleSubmit}>
           <div className="my-4">
             <label htmlFor="selectedFichier">Type de fichier</label>
             <MultiSelect
+              display="chip"
               id="selectedFichier"
-              {...telForm.getInputProps('selectedFichier')}
-              data={alertSelect}
+              {...telForm.getFieldProps('selectedFichier')}
+              options={alertSelect}
+              optionValue='value'
               placeholder="Selectionner le type de fichier"
               className="w-full md:w-20rem"
             />
           </div>
           <div className="my-4">
             <label htmlFor="telephone">Numéro de téléphone</label>
-            <TextInput
+            <InputText
               id="telephone"
               className="w-full md:w-20rem"
               type={'tel'}
-              {...telForm.getInputProps('telephone')}
+              {...telForm.getFieldProps('telephone')}
             />
           </div>
           <div className="text-center">

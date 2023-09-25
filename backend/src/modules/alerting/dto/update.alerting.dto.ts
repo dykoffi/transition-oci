@@ -16,7 +16,7 @@ export class UpdateOpexDto {
     description: 'An array of email addresses to receive the alert',
   })
   telephone?: string[];
-  
+
   @IsEnum(TypeFichier)
   @ApiProperty({
     enum: TypeFichier,
@@ -24,4 +24,6 @@ export class UpdateOpexDto {
     description: 'The type of file to be uploaded',
   })
   typeFichier: TypeFichier;
+
+  user: string;
 }

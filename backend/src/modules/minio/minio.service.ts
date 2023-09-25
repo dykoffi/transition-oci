@@ -10,13 +10,14 @@ import { FileValidator } from './../../services/file.validator.service';
 import { IUploadFileResponse } from './../../interfaces/uploadFileResponse';
 import { FileUserService } from './../fileuser/fileuser.service';
 import logger from './../../services/logger/logger';
+import { ActivityLogService } from '../activity_log/activity_log.service';
 
-interface dto {
+interface Dto {
   folder: string;
   user_id: string;
   date_range: string;
 }
-interface getObjectResponse {
+interface GetObjectResponse {
   name: string;
   etag: string;
   lastModified: string;
@@ -26,6 +27,7 @@ export class MinioService {
   constructor(
     private configService: ConfigService,
     private fileUserService: FileUserService,
+    private activityLogService: ActivityLogService,
   ) {}
 
   async getMinioClient() {
@@ -108,7 +110,7 @@ export class MinioService {
     }
   }
 
-  async uploadFile(dto: dto, file: any): Promise<IUploadFileResponse> {
+  async uploadFile(dto: Dto, file: any): Promise<IUploadFileResponse> {
     let result: IUploadFileResponse;
 
     // Get the Minio client
@@ -120,7 +122,7 @@ export class MinioService {
       // Validate the file
       let validator = FileValidator(dto.folder, file);
 
-      if ((await validator).state == true) {
+      if ((await validator).state) {
         // Parse the date range
         let date_range = JSON.parse(dto.date_range);
         console.log('date_range', date_range);
@@ -162,6 +164,13 @@ export class MinioService {
           fileEtag: etag.etag,
           userId: dto.user_id,
         });
+        this.activityLogService.create({
+          label: 'upload-file',
+          level: 'info',
+          user: dto.user_id,
+          code: '200',
+          type: 'success',
+        });
 
         // Return the success response
         result = {
@@ -171,6 +180,13 @@ export class MinioService {
         };
         return result;
       } else {
+        this.activityLogService.create({
+          label: 'upload-file-validation-fails',
+          level: 'info',
+          user: dto.user_id,
+          code: '200',
+          type: 'error',
+        });
         // Return the validation failed response
         result = {
           status: HttpStatus.OK,
@@ -181,6 +197,13 @@ export class MinioService {
       }
     } catch (error) {
       console.error(error);
+      this.activityLogService.create({
+        label: 'upload-file-fails',
+        level: 'error',
+        user: dto.user_id,
+        code: '500',
+        type: 'error',
+      });
       logger
         .emit({
           level: 'error',
@@ -193,11 +216,11 @@ export class MinioService {
     }
   }
 
-  async getObject(filename: string): Promise<getObjectResponse> {
+  async getObject(filename: string): Promise<GetObjectResponse> {
     // Get Minio Client
     let minioClient = await this.getMinioClient();
     // Initialize object to return
-    let object: getObjectResponse;
+    let object: GetObjectResponse;
     // Use promise to get object from Minio
     object = await new Promise((resolve, reject) => {
       let objectTemp = undefined;
@@ -277,7 +300,7 @@ export class MinioService {
           fileEtag: obj.etag,
         });
         if (fileuser !== null) {
-          if (fileuser.name == '' || fileuser.size==0) {
+          if (fileuser.name == '' || fileuser.size == 0) {
             this.fileUserService.upload(fileuser.id, {
               name: obj.name,
               url: url,
@@ -286,7 +309,6 @@ export class MinioService {
             });
           }
         }
-       
       });
 
       // Log success message

@@ -1,44 +1,38 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+type CurrentUser = {
+  info: string;
+  roles: string;
+};
 
-// TODO: Why using string for storing info and user roles?
-interface currentUser {
-  info: string,
-  roles: string
+interface CurrentUserInfo {
+  info: string;
+}
+interface CurrentUserRoles {
+  roles: string;
 }
 
-// TODO: Why defining these types if you can access to this info by using currentUser
-interface currentUserInfo {
-  info: string,
-}
-interface currentUserRoles {
-  roles: string,
-}
-
-const initialState: currentUser = {
+const initialState: CurrentUser = {
   info: '{}',
   roles: '{}',
-}
+};
 
 const user = createSlice({
   name: 'user',
   initialState,
 
   reducers: {
-    changeInfo(state, action: PayloadAction<currentUserInfo>) {
-      state.info = action.payload.info
+    changeInfo(state, action: PayloadAction<CurrentUserInfo>) {
+      state.info = action.payload.info;
     },
-    changeRole(state, action: PayloadAction<currentUserRoles>) {
-      state.roles = action.payload.roles
+    changeRole(state, action: PayloadAction<CurrentUserRoles>) {
+      state.roles = action.payload.roles;
     },
-  }
-})
+  },
+});
 
-export const {
-  changeInfo,
-  changeRole
-} = user.actions
+export const { changeInfo, changeRole } = user.actions;
 
-export const currentSelector = (state: { currentStore: currentUser }) => state.currentStore;
+export const currentSelector = (state: { currentStore: CurrentUser }) => state.currentStore;
 
 export default user.reducer;

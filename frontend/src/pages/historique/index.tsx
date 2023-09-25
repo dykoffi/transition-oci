@@ -5,7 +5,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import { BASE_URL_API, } from './../../constant';
 import { LoadFile } from '../../components/loadFile';
 import Table from '../../components/Table/table';
 
@@ -44,7 +43,7 @@ const Historique = () => {
   const getFiles = () => {
 
     axios
-      .get(BASE_URL_API + '/minio/list')
+      .get(import.meta.env.VITE_BASE_URL_API + '/minio/list')
       .then((response) => {
         const data = response.data.map((elt: any) => {
           return {
@@ -82,7 +81,7 @@ const Historique = () => {
         opened={opened}
         onClose={close}
         overlayProps={{
-          color: theme.colorScheme === 'dark' ? theme.colors.dark[9] : theme.colors.gray[2],
+          color: theme.colors.gray[2],
           opacity: 0.55,
           blur: 3,
         }}

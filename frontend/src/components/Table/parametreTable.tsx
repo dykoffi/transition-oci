@@ -22,6 +22,7 @@ const ParametreTable: React.FC<TableProps> = (props) => {
   const [editingRows, setEditingRows] = useState({});
   const state = useSelector((state: RootState) => state.user)
   const user_role = JSON.parse(state.roles);
+  const user = JSON.parse(state.info);
   const keycloak_client = import.meta.env.VITE_KEYCLOAK_CLIENT
   const roles = user_role[keycloak_client] ? user_role[keycloak_client].roles : [];
 
@@ -44,13 +45,13 @@ const ParametreTable: React.FC<TableProps> = (props) => {
     } else {
       value.sort((a: string, b: string) => parseFloat(a) - parseFloat(b));
       _products[index] = { ...newData, value: value.join(' ') };
-      await updateParametre({ ...newData, value: value.join(' '), updatedAt: new Date() });
+      await updateParametre({ ...newData, value: value.join(' '), updatedAt: new Date(), user: user.email });
       setProducts(_products);
       notify('Opex modifié avec succès', 'sucess')
     }
   };
 
-  const onRowEditChange = (e: {data:DataTableValue}) => {
+  const onRowEditChange = (e: { data: DataTableValue }) => {
     setEditingRows(e.data);
   };
 

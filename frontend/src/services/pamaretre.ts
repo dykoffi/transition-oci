@@ -1,9 +1,5 @@
 import { apiClient } from "../config/config";
 
-// TODO why not return directly data instead save it in var before
-
-// TODO why use sync instead async
-
 export const getParametre = async ()=> {
     const parametre =  await apiClient.get('parametre');
     

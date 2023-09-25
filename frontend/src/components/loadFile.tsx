@@ -2,20 +2,19 @@ import {
   Group,
   Text,
   useMantineTheme,
-  Notification,
   UnstyledButton,
   Tooltip,
   Select,
   Button,
   LoadingOverlay,
+  rem,
 } from '@mantine/core';
-import { IconUpload, IconX } from '@tabler/icons';
+import { IconUpload, IconX } from '@tabler/icons-react';
 import { Dropzone, DropzoneProps, MIME_TYPES, FileWithPath } from '@mantine/dropzone';
 import { MonthPickerInput } from '@mantine/dates';
 import Excell from '../assets/excel.png';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import { BASE_URL_API } from '../constant';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useForm } from '@mantine/form';
@@ -28,7 +27,6 @@ interface LoadFileProps extends Partial<DropzoneProps> {
 }
 export function LoadFile(props: LoadFileProps) {
   const theme = useMantineTheme();
-  const [error, setError] = useState(false);
   const [sucess, setSucess] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -36,7 +34,7 @@ export function LoadFile(props: LoadFileProps) {
   const user = JSON.parse(state.info);
   const user_role = JSON.parse(state.roles);
   const keycloak_client = import.meta.env.VITE_KEYCLOAK_CLIENT
-  const role = user_role[keycloak_client]?user_role[keycloak_client].roles:[];
+  const role = user_role[keycloak_client] ? user_role[keycloak_client].roles : [];
   const [file, setFile] = useState<FileWithPath>();
   const form = useForm({
     initialValues: {
@@ -49,41 +47,41 @@ export function LoadFile(props: LoadFileProps) {
     },
   });
 
-  const upload_data =[];
+  const upload_data = [];
 
-  if(role.includes('upload_bdd_site')) {
+  if (role.includes('upload_bdd_site')) {
     upload_data.push({ value: 'BASE_SITES', label: 'Base de données des sites' })
   }
-  if(role.includes('upload_opex_ihs_esco_file')) {
+  if (role.includes('upload_opex_ihs_esco_file')) {
     upload_data.push({ value: 'OPEX_ESCO', label: 'OPEX ESCO' })
   }
-  if(role.includes('upload_opex_ihs_esco_file')) {
+  if (role.includes('upload_opex_ihs_esco_file')) {
     upload_data.push({ value: 'OPEX_IHS', label: 'OPEX IHS' })
   }
-  if(role.includes('uplaod_ca_file')) {
+  if (role.includes('uplaod_ca_file')) {
     upload_data.push({ value: 'CA_SITES', label: 'CA SITES' })
   }
-  if(role.includes('upload_parc_site_file')) {
+  if (role.includes('upload_parc_site_file')) {
     upload_data.push({ value: 'PARC_SITES', label: 'Parc par site' })
   }
-  if(role.includes('upload_action_com_file')) {
+  if (role.includes('upload_action_com_file')) {
     upload_data.push({ value: 'ACTION_COM', label: 'Actions Commerciales' })
   }
-  if(role.includes('upload_action_tech_file')) {
+  if (role.includes('upload_action_tech_file')) {
     upload_data.push({ value: 'ACTION_TECH', label: 'Actions techniques' })
   }
-  if(role.includes('upload_congestion_file')) {
+  if (role.includes('upload_congestion_file')) {
     upload_data.push({ value: 'CONGESTION', label: 'Congestion' })
   }
-  if(role.includes('upload_annexe_opex_esco')) {
-    upload_data.push({value:'ANNEXE_OPEX_ESCO', label:'ANNEXE OPEX ESCO'})
+  if (role.includes('upload_annexe_opex_esco')) {
+    upload_data.push({ value: 'ANNEXE_OPEX_ESCO', label: 'ANNEXE OPEX ESCO' })
   }
- 
+
   const uploadFile = async (values: { origine: string; date_range: (Date | null)[] }) => {
     const formData = new FormData();
     const folder = values.origine;
 
-    file ? formData.append('file', file, file.name) : setError(true);
+    file && formData.append('file', file, file.name)
 
     const send_date = values.date_range.map((dt) => ({
       year: dt?.getFullYear(),
@@ -91,9 +89,9 @@ export function LoadFile(props: LoadFileProps) {
         dt === null
           ? 1
           : (dt.getMonth() + 1).toLocaleString('fr-FR', {
-              minimumIntegerDigits: 2,
-              useGrouping: false,
-            }),
+            minimumIntegerDigits: 2,
+            useGrouping: false,
+          }),
     }));
     formData.append('folder', folder);
     formData.append('date_range', JSON.stringify(send_date));
@@ -102,14 +100,14 @@ export function LoadFile(props: LoadFileProps) {
     formData.append('user_id', user.email);
     setVisible(true);
     try {
-      const response = await axios.post(BASE_URL_API + '/minio', formData);
+      const response = await axios.post(import.meta.env.VITE_BASE_URL_API + '/minio', formData);
 
       if (response.data.errors == null) {
         props.loadFile;
         notify('Le fichier a été uploadé avec succès', 'sucess');
       } else {
         const errors: Array<string> = response.data.errors;
-        errors.map((elt) => {
+        errors.forEach((elt) => {
           return notify(elt, 'error');
         });
       }
@@ -132,18 +130,8 @@ export function LoadFile(props: LoadFileProps) {
   const notify = (subject: any, type: string) => (type === 'sucess' ? toast.success(subject) : toast.error(subject));
   return (
     <div>
-      <LoadingOverlay visible={visible} overlayBlur={2} loaderProps={{ color: 'orange' }} />
-      <Notification
-        className={` w-80 my-5 flex justify-end ${!error && 'hidden'}`}
-        onClose={() => setError(false)}
-        icon={<IconX size={18} />}
-        color="red"
-      >
-        <ul className="list-disc">
-          <li>Les fichiers excell sont les seuls fichiers autorisés.</li>
-          <li>La taille maximum des fichiers doit être inférieur à 5mo</li>
-        </ul>
-      </Notification>
+      <LoadingOverlay visible={visible} overlayProps={{ radius: "sm", blur: 2 }} loaderProps={{ color: 'orange' }} />
+
       <form action="" onSubmit={form.onSubmit((values) => uploadFile(values))} onReset={form.onReset}>
         <Select
           className="my-7"
@@ -154,22 +142,10 @@ export function LoadFile(props: LoadFileProps) {
           withAsterisk
           data={upload_data}
           {...form.getInputProps('origine')}
-          styles={(theme) => ({
-            item: {
-              // applies styles to selected item
-              '&[data-selected]': {
-                '&, &:hover': {
-                  backgroundColor: theme.colorScheme === 'dark' ? theme.colors.orange[9] : theme.colors.orange[1],
-                  color: theme.colorScheme === 'dark' ? theme.white : theme.colors.orange[9],
-                },
-              },
 
-              // applies styles to hovered item (with mouse or keyboard)
-              '&[data-hovered]': {},
-            },
-          })}
         />
-        <Group position="center">
+
+        <Group align="center">
           <MonthPickerInput
             type="multiple"
             clearable
@@ -188,24 +164,27 @@ export function LoadFile(props: LoadFileProps) {
             onDrop={(files) => {
               handleFileUpload(files);
             }}
-            onReject={(files) => notify('extension valide : xls, xlsx, csv \n taille maximum: 5Mo', 'error')}
-            maxSize={5 * 1024 ** 2}
+            onReject={() => notify('extension valide : xls, xlsx, csv \n taille maximum: 5Mo', 'error')}
+            maxSize={3 * 1024 ** 2}
             accept={[MIME_TYPES.xls, MIME_TYPES.csv, MIME_TYPES.xlsx]}
             {...props}
           >
-            <Group position="center" spacing="xl" style={{ minHeight: 220, pointerEvents: 'none' }}>
+            <Group justify="center" gap="xl" mih={220} style={{ pointerEvents: 'none' }}>
               <Dropzone.Accept>
                 <IconUpload
-                  size={50}
+                  style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-blue-6)' }}
                   stroke={1.5}
-                  color={theme.colors[theme.primaryColor][theme.colorScheme === 'dark' ? 4 : 6]}
                 />
               </Dropzone.Accept>
               <Dropzone.Reject>
-                <IconX size={50} stroke={1.5} color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]} />
+                <IconX
+                  style={{ width: rem(52), height: rem(52), color: 'var(--mantine-color-red-6)' }}
+                  stroke={1.5}
+                />
               </Dropzone.Reject>
               <Dropzone.Idle>
                 <img src={Excell} className="w-12" alt="" />
+
               </Dropzone.Idle>
 
               <div>
@@ -216,13 +195,15 @@ export function LoadFile(props: LoadFileProps) {
             </Group>
           </Dropzone>
 
+
+
           <div className={`${!sucess && 'hidden'}`}>
             <div className={`p-5 flex justify-center items-center gap-4`}>
               <img src={Excell} className="w-12" alt="" />
               <p className="font-bold text-green underline">{file?.name}</p>
               <Tooltip label="Annuler l'importation du fichier">
                 <UnstyledButton className="hover:bg-red-600 rounded-full" onClick={() => setSucess(false)}>
-                  <IconX size={50} stroke={3.5} color={theme.colors.red[theme.colorScheme === 'dark' ? 4 : 6]} />
+                  <IconX size={50} stroke={3.5} color={theme.colors.red[6]} />
                 </UnstyledButton>
               </Tooltip>
             </div>
@@ -232,7 +213,7 @@ export function LoadFile(props: LoadFileProps) {
                             <IconCheck
                                 size={50}
                                 stroke={3.5}
-                                color={theme.colors.green[theme.colorScheme === 'dark' ? 4 : 6]}
+                                color={theme.colors.green[6]}
                             />
                         </UnstyledButton>
                     </Tooltip> */}
@@ -246,7 +227,7 @@ export function LoadFile(props: LoadFileProps) {
             variant="outline"
             color="orange"
             size="xl"
-            rightIcon={<img className="w-10" src={Send2} alt="" />}
+            rightSection={<img className="w-10" src={Send2} alt="" />}
           >
             Charger
           </Button>

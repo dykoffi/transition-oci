@@ -1,14 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
-export class updateParametreDto {
+export class UpdateParametreDto {
   @ApiProperty({ example: 'Rent', description: 'The label of the parameter' })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
   label?: string;
 
-  @ApiProperty({ example: '30 40 50', description: 'The value of the parameter' })
+  @ApiProperty({
+    example: '30 40 50',
+    description: 'The value of the parameter',
+  })
   @IsOptional()
   @IsNotEmpty()
   @IsString()
@@ -34,4 +37,6 @@ export class updateParametreDto {
   @IsNotEmpty()
   @IsString()
   updatedAt: Date;
+
+  user: string;
 }

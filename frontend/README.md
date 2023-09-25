@@ -1,74 +1,27 @@
+# React + TypeScript + Vite
 
-# REACT BEST PRACTISES 
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-go to [best practise](https://reactpatterns.com/)
+Currently, two official plugins are available:
 
-# RUN LINTER
-  ```bash
-    yarn lint
-  ```
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-# RUN PRETTIER
-  ```bash
-    yarn format
-  ```
+## Expanding the ESLint configuration
 
-# RUN UNIT TEST
-  ```bash
-    yarn test
-  ```
+If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-  ```bash
-    yarn coverage
-  ```
+- Configure the top-level `parserOptions` property like this:
 
-More on [Vitest doc](https://vitest.dev/guide/)
+```js
+   parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: ['./tsconfig.json', './tsconfig.node.json'],
+    tsconfigRootDir: __dirname,
+   },
+```
 
-# RUN PLAYWRIGHT TEST (END TO END TEST)
-
-Inside that directory, you can run several commands:
-
-* Runs the end-to-end tests.
-
-  ```bash
-    yarn playwright test
-  ```
-* Runs the tests only on Desktop Chrome.
-
-  ```bash
-  yarn playwright test --project=chromium
-   ```
-* Runs the tests in a specific file.
-
-  ```bash
-  yarn playwright test example
-  ```
-* Runs the tests in debug mode.
-
-  ```bash
-  yarn playwright test --debug
-  ```
-* Auto generate tests with Codegen.
-
-  ```bash
-  yarn playwright codegen
-  ```
-
-* We suggest that you begin by typing:
-    ```bash
-    yarn playwright test
-    ```
-
-More on [playwright doc](https://playwright.dev/docs/intro)
-
-# RUN PROJECT
-
-### Install depedencies
-  ```bash
-    yarn
-  ```
-
-### Run project
-  ```bash
-    yarn dev
-  ```
+- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
+- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
+- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
