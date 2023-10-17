@@ -14,43 +14,36 @@ spec:
       labels:
         app: backend-ihm
     spec:
+      imagePullSecrets:
+        - name: regcred
       containers:
         - name: backend-ihm
-          image: dykoffi/oci-back:oci #Change this image according your env
+          image: system.registry.eneci.net/oci-backend:latest #Change this image according your env
           imagePullPolicy: Always
-          securityContext:
-            runAsNonRoot: true
-            allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: true
-            runAsUser: 10001
-            runAsGroup: 10001
-            fsGroup: 10001
-            supplementalGroups: [1001]
-            seccompProfile:
-              type: RuntimeDefault
-            capabilities:
-              drop: 
-                - ALL
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "npx prisma db seed"]
           resources:
             requests:
-              cpu: 1G
-              memory: 2G
+              cpu: "500m"
+              memory: "256Mi"
             limits:
-              cpu: 1G
-              memory: 2G
+              cpu: "1"
+              memory: "500Mi"
           env:
             - name: MINIO_ENDPOINT
-              value: datastack-minio.data-stack #Change this value according your env
+              value:  system.minioapi.eneci.net
             - name: MINIO_PORT
-              value: "9000" #Change this value according your env
+              value: "443" #Change this value according your env
             - name: MINIO_ACCESS_KEY
-              value: admin #Change this value according your env
+              value: motower #Change this value according your env
             - name: MINIO_SECRET_KEY
               value: 6Sfa6MTpt96dY2D9Jv5c #Change this value according your env
             - name: MINIO_BUCKETNAME
-              value: gps-oci
+              value: motower
             - name: DATABASE_URL
-              value: postgresql://motower:6Sfa6MTpt96dY2D9Jv5c@postgres-postgresql:5432/test?schema=public
+              value: postgresql://motower:6Sfa6MTpt96dY2D9Jv5c@postgres-postgresql:5432/ihm_db?schema=public
           ports:
             - containerPort: 3000
 ---

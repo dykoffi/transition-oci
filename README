@@ -1,8 +1,0 @@
-1- Installer la chart de keycloak
-2- Installer la chart de postgres
-3- Build l'image docker du backend
-4- Push l'image du backend sur le registry harbor
-5- Lancer le deploiement du backend
-6- Build l'image docker du frontend
-7- Push l'image du frontend sur le registry harbor
-8- Lancer le deploiement du frontend
