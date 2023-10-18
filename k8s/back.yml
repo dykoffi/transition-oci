@@ -33,9 +33,9 @@ spec:
               memory: "500Mi"
           env:
             - name: MINIO_ENDPOINT
-              value:  system.minioapi.eneci.net
+              value: "192.168.1.165"
             - name: MINIO_PORT
-              value: "443" #Change this value according your env
+              value: "30404" #Change this value according your env
             - name: MINIO_ACCESS_KEY
               value: motower #Change this value according your env
             - name: MINIO_SECRET_KEY
@@ -61,4 +61,4 @@ spec:
       protocol: TCP
       port: 80
       targetPort: 3000
-      nodePort: 30010
+      nodePort: 30400

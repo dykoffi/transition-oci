@@ -19,4 +19,6 @@ kubectl exec -i -n $namespace keycloak-0 -- kcadm.sh create realms -f /opt/bitna
 
 ## Installer la chart postgres
 helm upgrade --install postgres bitnami/postgresql --namespace $namespace --version "12.11.1" -f $(pwd)/postgres_values.yaml
+
 # clear
+helm upgrade --install minio bitnami/minio --namespace $namespace --version "12.8.15" -f $(pwd)/minio_values.yaml

@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Coords" ALTER COLUMN "time" SET DATA TYPE BIGINT;
