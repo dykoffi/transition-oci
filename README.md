@@ -40,6 +40,6 @@ kubectl apply -f front.yml
   5. Assign roles (nest-app client roles) to this user
 
 10. Test Application
-  1. To to the frontend url
-  2. Login with the user you are previously created
+  1. Go to the frontend url
+  2. Login with the user you have previously created
   3. Try to do something
